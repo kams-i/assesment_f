@@ -1,3 +1,4 @@
+// src/lib/api.ts
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v4";
 
@@ -70,6 +71,8 @@ export async function apiRequest(path: string, options: RequestInit = {}, retry 
   }
 
   if (token) {
+    // Some backend frameworks/routes expect 'x-access-token' or different schemes. 
+    // If your v4 API expects just the raw token string instead of 'Bearer ' or vice versa, adjust this line.
     headers.Authorization = `Bearer ${token}`;
   }
 
@@ -90,6 +93,7 @@ export async function apiRequest(path: string, options: RequestInit = {}, retry 
       await refreshToken();
       return apiRequest(path, options, true);
     } catch (error) {
+      logout();
       throw error;
     }
   }
@@ -105,6 +109,10 @@ export async function apiRequest(path: string, options: RequestInit = {}, retry 
       } catch {
         message = text;
       }
+    }
+
+    if (response.status === 401) {
+      logout();
     }
 
     throw new Error(message);
