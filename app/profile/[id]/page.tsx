@@ -305,11 +305,10 @@ export default function ProfilePage() {
                                                 <button
                                                     onClick={handleFollowToggle}
                                                     disabled={followBusy}
-                                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer disabled:opacity-50 ${
-                                                        isFollowing
+                                                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer disabled:opacity-50 ${isFollowing
                                                             ? "bg-gray-100 text-gray-700 hover:bg-red-50 hover:text-red-600"
                                                             : "bg-[#7A5AF8] text-white hover:bg-[#6944e0]"
-                                                    }`}
+                                                        }`}
                                                 >
                                                     {isFollowing ? (
                                                         <>
@@ -408,7 +407,7 @@ export default function ProfilePage() {
                                                                 <Edit3 className="w-3.5 h-3.5" />
                                                             </button>
                                                             <button
-                                                                onClick={(e) => handleDeletePost(e, postId)}
+                                                                onClick={(e) => postId && handleDeletePost(e, postId)}
                                                                 className="p-1.5 bg-white/95 hover:bg-red-50 text-red-600 rounded-lg shadow-sm border border-gray-200 transition-colors"
                                                                 title="Delete Post"
                                                             >
