@@ -1,6 +1,7 @@
 // src/lib/api.ts
+
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v4";
+  process.env.NEXT_PUBLIC_API_URL || "https://assesment-b.onrender.com/api/v4";
 
 function getStorageValue(key: string): string | null {
   if (typeof window === "undefined") return null;
@@ -32,7 +33,8 @@ export async function refreshToken(): Promise<string> {
     throw new Error("No refresh token available");
   }
 
-  const response = await fetch(`${API_BASE_URL}/auth/refreshtoken`, {
+  const baseUrl = API_BASE_URL.endsWith("/") ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const response = await fetch(`${baseUrl}/auth/refreshtoken`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -57,8 +59,9 @@ export async function refreshToken(): Promise<string> {
 }
 
 export async function apiRequest(path: string, options: RequestInit = {}, retry = false): Promise<any> {
+  const baseUrl = API_BASE_URL.endsWith("/") ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  const url = `${API_BASE_URL}${cleanPath}`;
+  const url = `${baseUrl}${cleanPath}`;
 
   const token = getToken();
 
@@ -71,8 +74,6 @@ export async function apiRequest(path: string, options: RequestInit = {}, retry 
   }
 
   if (token) {
-    // Some backend frameworks/routes expect 'x-access-token' or different schemes. 
-    // If your v4 API expects just the raw token string instead of 'Bearer ' or vice versa, adjust this line.
     headers.Authorization = `Bearer ${token}`;
   }
 

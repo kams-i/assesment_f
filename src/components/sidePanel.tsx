@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Compass, Upload, Users, User, LogIn } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Compass, Upload, Users, User, LogIn, MessageSquare } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
 import { getToken } from '@/src/lib/api';
 import UploadModal from './uploadModal';
 
@@ -12,6 +12,7 @@ interface SidePanelProps {
 
 export default function SidePanel({ onOpenLogin }: SidePanelProps) {
     const router = useRouter();
+    const pathname = usePathname();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
@@ -47,6 +48,36 @@ export default function SidePanel({ onOpenLogin }: SidePanelProps) {
         }
     };
 
+    const handleMessagesClick = () => {
+        const token = getToken();
+        if (!token) {
+            onOpenLogin();
+        } else {
+            router.push("/messages");
+        }
+    };
+
+    // Helper to determine if a route is currently active
+    const isActive = (path: string) => {
+        if (path === '/') return pathname === '/';
+        return pathname?.startsWith(path);
+    };
+
+    const getButtonClass = (path: string) => {
+        const active = isActive(path);
+        return `flex flex-col md:flex-row items-center font-medium gap-1 md:gap-3 p-2 md:px-4 md:py-2.5 rounded-lg transition-colors text-left group cursor-pointer ${
+            active 
+                ? 'bg-[#7A5AF8] text-white shadow-sm' 
+                : 'text-gray-700 hover:bg-[#7A5AF8] hover:text-white'
+        }`;
+    };
+
+    const getIconClass = (path: string) => {
+        return `w-6 h-6 md:w-5 md:h-5 transition-colors ${
+            isActive(path) ? 'text-white' : 'text-gray-500 group-hover:text-white'
+        }`;
+    };
+
     return (
         <>
             <aside className="fixed inset-x-0 bottom-0 top-auto z-40 bg-white border-t border-gray-200 shadow-sm p-2 md:fixed md:inset-y-0 md:left-0 md:w-64 md:h-screen md:border-r md:border-t-0 md:pt-7 md:flex md:flex-col md:p-4 md:shadow-sm">
@@ -55,15 +86,16 @@ export default function SidePanel({ onOpenLogin }: SidePanelProps) {
                     <img src="/Frame 48095411.png" alt="Logo" className="w-40 pt-4 pb-12 h-auto" />
                 </div>
 
-                {/* Navigation Buttons: Row on mobile bottom bar, Column on desktop sidebar */}
+                {/* Navigation Buttons */}
                 <div className="flex md:flex-col flex-row items-center md:items-stretch justify-around md:justify-start gap-1 md:gap-2">
                     <button
                         onClick={() => router.push("/")}
-                        className="flex flex-col md:flex-row items-center font-medium gap-1 md:gap-3 p-2 md:px-4 md:py-2.5 text-gray-700 rounded-lg hover:bg-[#7A5AF8] hover:text-white transition-colors text-left group cursor-pointer"
+                        className={getButtonClass('/')}
                     >
-                        <Compass className="w-6 h-6 md:w-5 md:h-5 text-gray-500 group-hover:text-white transition-colors" />
+                        <Compass className={getIconClass('/')} />
                         <span className="hidden md:inline text-base">Explore</span>
                     </button>
+
                     <button
                         onClick={handleUploadClick}
                         className="flex flex-col md:flex-row items-center font-medium gap-1 md:gap-3 p-2 md:px-4 md:py-2.5 text-gray-700 rounded-lg hover:bg-[#7A5AF8] hover:text-white transition-colors text-left group cursor-pointer"
@@ -71,20 +103,31 @@ export default function SidePanel({ onOpenLogin }: SidePanelProps) {
                         <Upload className="w-6 h-6 md:w-5 md:h-5 text-gray-500 group-hover:text-white transition-colors" />
                         <span className="hidden md:inline text-base">Upload</span>
                     </button>
+
                     <button
                         onClick={handleFollowingClick}
-                        className="flex flex-col md:flex-row items-center font-medium gap-1 md:gap-3 p-2 md:px-4 md:py-2.5 text-gray-700 rounded-lg hover:bg-[#7A5AF8] hover:text-white transition-colors text-left group cursor-pointer"
+                        className={getButtonClass('/following')}
                     >
-                        <Users className="w-6 h-6 md:w-5 md:h-5 text-gray-500 group-hover:text-white transition-colors" />
+                        <Users className={getIconClass('/following')} />
                         <span className="hidden md:inline text-base">Following</span>
                     </button>
+
                     <button
                         onClick={handleProfileClick}
-                        className="flex flex-col md:flex-row items-center font-medium gap-1 md:gap-3 p-2 md:px-4 md:py-2.5 text-gray-700 rounded-lg hover:bg-[#7A5AF8] hover:text-white transition-colors text-left group cursor-pointer"
+                        className={getButtonClass('/profile')}
                     >
-                        <User className="w-6 h-6 md:w-5 md:h-5 text-gray-500 group-hover:text-white transition-colors" />
+                        <User className={getIconClass('/profile')} />
                         <span className="hidden md:inline text-base">Profile</span>
                     </button>
+
+                    <button
+                        onClick={handleMessagesClick}
+                        className={getButtonClass('/messages')}
+                    >
+                        <MessageSquare className={getIconClass('/messages')} />
+                        <span className="hidden md:inline text-base">Messages</span>
+                    </button>
+
                     {!isLoggedIn && (
                         <button
                             onClick={onOpenLogin}

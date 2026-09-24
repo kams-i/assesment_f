@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPosts } from "@/src/services/postService";
 import { getToken } from "@/src/lib/api";
@@ -8,7 +9,7 @@ import SidePanel from "@/src/components/sidePanel";
 import LoginModal from "@/src/components/loginModal";
 import SignUpModal from "@/src/components/signUpModal";
 import PostModal from "@/src/components/postModal";
-import { LogIn, Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import { LogIn, Heart, MessageCircle, MoreHorizontal } from "lucide-react";
 
 export default function Home() {
   const queryClient = useQueryClient();
@@ -32,8 +33,8 @@ export default function Home() {
   });
 
   // Safely normalize posts into an array regardless of API response structure
-  const posts: any[] = Array.isArray(rawPosts) 
-    ? rawPosts 
+  const posts: any[] = Array.isArray(rawPosts)
+    ? rawPosts
     : (rawPosts as any)?.posts || (rawPosts as any)?.data || [];
 
   // Prevent background scrolling when any modal is open
@@ -71,7 +72,7 @@ export default function Home() {
       {errorMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 text-sm animate-bounce">
           <span>{errorMessage}</span>
-          <button 
+          <button
             onClick={() => setErrorMessage(null)}
             className="font-bold text-lg leading-none hover:text-gray-200 cursor-pointer"
           >
@@ -81,17 +82,26 @@ export default function Home() {
       )}
 
       {/* Mobile-only Top Navbar */}
-      <div className="md:hidden w-full bg-white border-b border-zinc-200 px-4 py-3 fixed top-0 left-0 z-40 flex items-center justify-between shadow-sm">
+      <div className="md:hidden w-full bg-white border-b border-zinc-200 px-4 py-3 fixed top-0 left-0 z-50 flex items-center justify-between shadow-sm">
         <img src="/Frame 48095411.png" alt="Logo" className="w-32 h-auto" />
-        {!isLoggedIn && (
-          <button
-            onClick={handleOpenLogin}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg hover:bg-[#7A5AF8] hover:text-white hover:border-transparent transition-colors shadow-sm cursor-pointer"
+        <div className="flex items-center gap-2">
+          <Link
+            href="/messages"
+            aria-label="Messages"
+            className="inline-flex items-center justify-center p-2 text-zinc-700 hover:text-[#7A5AF8] hover:bg-zinc-100 rounded-lg transition-colors"
           >
-            <LogIn className="w-4 h-4" />
-            Login
-          </button>
-        )}
+            <MessageCircle className="w-5 h-5 text-zinc-700" />
+          </Link>
+          {!isLoggedIn && (
+            <button
+              onClick={handleOpenLogin}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 rounded-lg hover:bg-[#7A5AF8] hover:text-white hover:border-transparent transition-colors shadow-sm cursor-pointer"
+            >
+              <LogIn className="w-4 h-4" />
+              Login
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Fixed Top-Right Login Button for Desktop (Hidden if logged in) */}
@@ -153,10 +163,11 @@ export default function Home() {
                   key={post.id || post._id}
                   className="bg-white border-y md:border border-zinc-200 md:rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
                 >
+
                   {/* Post Header */}
                   <div className="flex items-center justify-between p-3.5 md:p-4 pb-3">
-                    <div 
-                      onClick={() => setSelectedPost(post)}
+                    <Link
+                      href={`/profile/${post.user?.id || post.userId}`}
                       className="flex items-center gap-3 cursor-pointer group"
                     >
                       <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xs md:text-sm overflow-hidden uppercase shadow-sm">
@@ -168,7 +179,7 @@ export default function Home() {
                         </h3>
                         <p className="text-[11px] md:text-xs text-zinc-500">@{username}</p>
                       </div>
-                    </div>
+                    </Link>
                     <button className="text-zinc-400 hover:text-zinc-600 p-1 rounded-full cursor-pointer">
                       <MoreHorizontal className="w-5 h-5" />
                     </button>
@@ -176,7 +187,7 @@ export default function Home() {
 
                   {/* Post Caption */}
                   {post.content && (
-                    <div 
+                    <div
                       onClick={() => setSelectedPost(post)}
                       className="px-3.5 md:px-4 pb-3 cursor-pointer"
                     >
@@ -188,14 +199,14 @@ export default function Home() {
 
                   {/* Post Media (Edge-to-edge on mobile like TikTok/Instagram feeds) */}
                   {post.images && post.images.length > 0 && (
-                    <div 
+                    <div
                       onClick={() => setSelectedPost(post)}
                       className="bg-black flex items-center justify-center max-h-[450px] md:max-h-[500px] overflow-hidden cursor-pointer"
                     >
-                      <img 
-                        src={post.images[0]} 
-                        alt="Post media" 
-                        className="w-full h-full object-cover max-h-[450px] md:max-h-[500px]" 
+                      <img
+                        src={post.images[0]}
+                        alt="Post media"
+                        className="w-full h-full object-cover max-h-[450px] md:max-h-[500px]"
                       />
                     </div>
                   )}
@@ -204,22 +215,20 @@ export default function Home() {
                   <div className="p-3.5 md:p-4 pt-3 border-t border-zinc-100 bg-white">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-5">
-                        <button 
+                        <button
                           onClick={() => setSelectedPost(post)}
                           className="flex items-center gap-1.5 text-zinc-800 hover:text-red-500 transition-transform active:scale-125 cursor-pointer"
                         >
                           <Heart className="w-5 h-5 md:w-6 md:h-6" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => setSelectedPost(post)}
                           className="flex items-center gap-1.5 text-zinc-800 hover:text-zinc-600 transition-colors cursor-pointer"
                         >
                           <MessageCircle className="w-5 h-5 md:w-6 md:h-6 -scale-x-100" />
                           <span className="text-xs md:text-sm font-medium">{post.comments?.length || 0}</span>
                         </button>
-                        <button className="flex items-center gap-1.5 text-zinc-800 hover:text-zinc-600 transition-colors cursor-pointer">
-                          <Share2 className="w-5 h-5 md:w-6 md:h-6" />
-                        </button>
+ 
                       </div>
                     </div>
                   </div>
