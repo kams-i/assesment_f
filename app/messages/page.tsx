@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation'; // Added useSearchParams
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import ConversationSidebar from '@/src/components/conversationSidebar';
 import ChatBox from '@/src/components/chatBox';
 import SidePanel from '@/src/components/sidePanel';
@@ -18,9 +18,10 @@ interface UserContact {
     email: string;
 }
 
-export default function MessagesPage() {
+// 1. Inner component that safely uses useSearchParams
+function MessagesContent() {
     const router = useRouter();
-    const searchParams = useSearchParams(); // Read query parameters
+    const searchParams = useSearchParams();
     const targetUserId = searchParams.get('userId');
 
     const [contacts, setContacts] = useState<UserContact[]>([]);
@@ -69,7 +70,6 @@ export default function MessagesPage() {
                 const fetchedContacts: UserContact[] = data.data || [];
                 setContacts(fetchedContacts);
 
-                // If a userId query param exists, auto-select or fetch user details if not in contacts yet
                 if (targetUserId) {
                     const existingContact = fetchedContacts.find(
                         (c) => String(c.id) === String(targetUserId)
@@ -78,7 +78,6 @@ export default function MessagesPage() {
                     if (existingContact) {
                         setSelectedUser(existingContact);
                     } else {
-                        // Optional fallback: Fetch user profile directly if they aren't in existing chat contacts yet
                         try {
                             const userRes = await fetch(`https://assesment-b.onrender.com/api/v4/user/one/${targetUserId}`, {
                                 headers: { Authorization: `Bearer ${token}` }
@@ -166,7 +165,6 @@ export default function MessagesPage() {
                                 selectedUserId={selectedUser?.id ?? null}
                                 onSelectUser={(user) => {
                                     setSelectedUser(user);
-                                    // Update URL cleanly without reloading page when clicking sidebar contacts
                                     router.replace(`/messages?userId=${user.id}`, { scroll: false });
                                 }}
                             />
@@ -237,5 +235,14 @@ export default function MessagesPage() {
                 onSwitchToLogin={handleOpenLogin}
             />
         </main>
+    );
+}
+
+// 2. Default exported Page wrapper wrapped in Suspense to satisfy Next.js requirements
+export default function MessagesPage() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading messages...</div>}>
+            <MessagesContent />
+        </Suspense>
     );
 }
