@@ -129,7 +129,7 @@ export default function ChatBox({ currentUserId, recipientId, token }: ChatBoxPr
                                             : 'bg-zinc-100 text-zinc-800 rounded-bl-none'
                                     }`}
                                 >
-                                    <p className="break-words">{msg.content}</p>
+                                    <p className="wrap-break-word">{msg.content}</p>
                                 </div>
                             </div>
                         );

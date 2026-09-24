@@ -42,7 +42,7 @@ export default function ConversationSidebar({ contacts, selectedUserId, onSelect
                                 : 'border-l-4 border-transparent'
                         }`}
                     >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-semibold text-white text-xs shrink-0 shadow-xs">
+                        <div className="w-10 h-10 rounded-full bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-semibold text-white text-xs shrink-0 shadow-xs">
                             {initials}
                         </div>
                         <div className="min-w-0 flex-1">

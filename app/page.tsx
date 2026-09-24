@@ -140,7 +140,7 @@ export default function Home() {
                     <div className="w-full h-3.5 bg-zinc-100 rounded animate-pulse" />
                     <div className="w-3/4 h-3.5 bg-zinc-100 rounded animate-pulse" />
                   </div>
-                  <div className="w-full h-72 md:h-80 bg-zinc-100 rounded-none md:rounded-lg mb-4 animate-pulse -mx-4 md:mx-0 w-[calc(100%+2rem)] md:w-full" />
+                  <div className="w-full h-72 md:h-80 bg-zinc-100 rounded-none md:rounded-lg mb-4 animate-pulse -mx-4 md:mx-0  md:w-full" />
                   <div className="flex items-center gap-6 pt-2 border-t border-zinc-100">
                     <div className="w-12 h-4 bg-zinc-100 rounded animate-pulse" />
                   </div>
@@ -170,7 +170,7 @@ export default function Home() {
                       href={`/profile/${post.user?.id || post.userId}`}
                       className="flex items-center gap-3 cursor-pointer group"
                     >
-                      <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xs md:text-sm overflow-hidden uppercase shadow-sm">
+                      <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xs md:text-sm overflow-hidden uppercase shadow-sm">
                         {firstInitial}
                       </div>
                       <div>
@@ -191,7 +191,7 @@ export default function Home() {
                       onClick={() => setSelectedPost(post)}
                       className="px-3.5 md:px-4 pb-3 cursor-pointer"
                     >
-                      <p className="text-zinc-800 text-xs md:text-sm leading-relaxed break-words">
+                      <p className="text-zinc-800 text-xs md:text-sm leading-relaxed wrap-break-word">
                         {post.content}
                       </p>
                     </div>
@@ -201,12 +201,12 @@ export default function Home() {
                   {post.images && post.images.length > 0 && (
                     <div
                       onClick={() => setSelectedPost(post)}
-                      className="bg-black flex items-center justify-center max-h-[450px] md:max-h-[500px] overflow-hidden cursor-pointer"
+                      className="bg-black flex items-center justify-center max-h-112.5 md:max-h-125 overflow-hidden cursor-pointer"
                     >
                       <img
                         src={post.images[0]}
                         alt="Post media"
-                        className="w-full h-full object-cover max-h-[450px] md:max-h-[500px]"
+                        className="w-full h-full object-cover max-h-112.5 md:max-h-125"
                       />
                     </div>
                   )}

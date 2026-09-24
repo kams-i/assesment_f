@@ -188,7 +188,7 @@ export default function MessagesPage() {
                                         <ArrowLeft className="w-5 h-5" />
                                     </button>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xs uppercase">
+                                        <div className="w-7 h-7 rounded-full bg-linear-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-xs uppercase">
                                             {selectedUser.firstName?.charAt(0)}
                                         </div>
                                         <span className="font-semibold text-sm text-zinc-900">
